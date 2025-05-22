@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aren Clicker 2 - An addictive clicking game">
+    <title>Aren Clicker 2</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:,">
+    
+<!-- Matomo Tag Manager -->
+<script>
+  var _mtm = window._mtm = window._mtm || [];
+  _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+  (function() {
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='https://macrolimit.com/matomo/js/container_kYgfVB3g.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Tag Manager -->
+
+
+</head>
+<body>
+    <div class="modal-overlay" id="overlay"></div>
+    
+    <div id="player-name-modal" class="modal">
+        <h2>Enter Player Name</h2>
+        <input type="text" id="player-name-input" placeholder="Player Name" maxlength="20" autocomplete="off" spellcheck="false">
+        <button class="upgrade-btn">Start Game</button>
+    </div>
+
+    <div id="leaderboard-modal" class="modal">
+        <h2>Leaderboard</h2>
+        <div class="leaderboard-content">
+            <table id="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <button class="upgrade-btn" id="leaderboard-close">Close</button>
+    </div>
+
+    <h1>Aren Clicker <span>2</span></h1>
+    <div id="counter">0</div>
+    <p id="counter-words" class="counter-words-text"></p>
+    <button id="leaderboard-btn" class="corner-button">Leaderboard</button>
+    <button id="reset-btn" class="corner-button">Reset Game</button>
+    <button id="skins-btn" class="corner-button">Skins</button>
+    <button id="sigma-skins-btn" class="corner-button" style="display: none;">Sigma Skins</button> <!-- New Sigma Skins Button -->
+    <img id="clickArea" src="./skins/click1.jpg" alt="Click Area" draggable="false"> <!-- Moved below new button -->
+    <div class="bottom-controls">
+        <div id="upgrades">
+            <button class="upgrade-btn" id="autoClickerBtn">
+                Buy Auto Clicker (Cost: 1,000,000 clicks)
+                <div class="button-stat">Auto Clickers: <span id="auto-clickers">0</span></div>
+            </button>
+            <button class="upgrade-btn" id="multiplierBtn">
+                Buy Multiplier (Cost: 10 clicks)
+                <div class="button-stat">Current: <span id="multiplier">1.0</span>x</div>
+            </button>
+        </div>
+    </div>
+
+    <div id="skins-modal" class="modal">
+        <h2>Select Skin</h2>
+        <div class="skins-container">
+            <!-- Aren Skin (Default) -->
+            <div class="skin-option" data-skin="aren">
+                <img src="./skins/click1.jpg" alt="Aren Skin">
+                <p>Aren</p>
+                <p class="skin-cost" style="display: none;">Free</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="aren">Selected</button>
+            </div>
+
+            <!-- Anton SA (Reward) -->
+            <div class="skin-option" data-skin="antonsa">
+                <img src="./skins/antonsa1.jpg" alt="Anton SA Skin">
+                <p>Anton SA</p>
+                <p class="skin-cost">Reward: +100,000 clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="antonsa">Claim Reward</button>
+            </div>
+
+            <!-- Messi -->
+            <div class="skin-option" data-skin="messi">
+                <img src="./skins/messi1.jpg" alt="Messi Skin">
+                <p>Messi</p>
+                <p class="skin-cost">Cost: 10,000 clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="messi">Buy (10,000 clicks)</button>
+            </div>
+
+            <!-- CR7 -->
+            <div class="skin-option" data-skin="cr7">
+                <img src="./skins/ronaldo1.jpg" alt="CR7 Skin">
+                <p>CR7</p>
+                <p class="skin-cost">Cost: 100,000 clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="cr7">Buy (100,000 clicks)</button>
+            </div>
+
+            <!-- Anton 3 -->
+            <div class="skin-option" data-skin="anton3">
+                <img src="./skins/anton31.jpg" alt="Anton 3 Skin">
+                <p>Anton 3</p>
+                <p class="skin-cost">Cost: 1 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="anton3">Buy (1 M clicks)</button>
+            </div>
+
+            <!-- Casper 2 -->
+            <div class="skin-option" data-skin="casper2">
+                <img src="./skins/casper21.jpg" alt="Casper 2 Skin">
+                <p>Casper 2</p>
+                <p class="skin-cost">Cost: 1 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="casper2">Buy (1 M clicks)</button>
+            </div>
+
+            <!-- Matteo -->
+            <div class="skin-option" data-skin="matteo">
+                <img src="./skins/matteo1.jpg" alt="Matteo Skin">
+                <p>Matteo</p>
+                <p class="skin-cost">Cost: 1 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="matteo">Buy (1 M clicks)</button>
+            </div>
+
+            <!-- Unknown Name -->
+            <div class="skin-option" data-skin="unknown">
+                <img src="./skins/unknown1.jpg" alt="Unknown Skin">
+                <p>Unknown Name</p>
+                <p class="skin-cost">Cost: 1 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="unknown">Buy (1 M clicks)</button>
+            </div>
+
+            <!-- Casper -->
+            <div class="skin-option" data-skin="casper">
+                <img src="./skins/casper1.jpg" alt="Casper Skin">
+                <p>Casper</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="casper">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Eliot -->
+            <div class="skin-option" data-skin="eliot">
+                <img src="./skins/eliot1.jpg" alt="Eliot Skin">
+                <p>Eliot</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="eliot">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Emil -->
+            <div class="skin-option" data-skin="emil">
+                <img src="./skins/emil1.jpg" alt="Emil Skin">
+                <p>Emil</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="emil">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Gabbe -->
+            <div class="skin-option" data-skin="gabbe">
+                <img src="./skins/gabbe1.jpg" alt="Gabbe Skin">
+                <p>Gabbe</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="gabbe">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Julle -->
+            <div class="skin-option" data-skin="julle">
+                <img src="./skins/julle1.jpg" alt="Julle Skin">
+                <p>Julle</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="julle">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Levi -->
+            <div class="skin-option" data-skin="levi">
+                <img src="./skins/levi1.jpg" alt="Levi Skin">
+                <p>Levi</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="levi">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Luddain -->
+            <div class="skin-option" data-skin="luddain">
+                <img src="./skins/luddain1.jpg" alt="Luddain Skin">
+                <p>Luddain</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="luddain">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Ludvig -->
+            <div class="skin-option" data-skin="ludvig">
+                <img src="./skins/ludvig1.jpg" alt="Ludvig Skin">
+                <p>Ludvig</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="ludvig">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Malte -->
+            <div class="skin-option" data-skin="malte">
+                <img src="./skins/malte1.jpg" alt="Malte Skin">
+                <p>Malte</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="malte">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Ollibolly -->
+            <div class="skin-option" data-skin="ollibolly">
+                <img src="./skins/ollibolly1.jpg" alt="Ollibolly Skin">
+                <p>Ollibolly</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="ollibolly">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Seth -->
+            <div class="skin-option" data-skin="seth">
+                <img src="./skins/seth1.jpg" alt="Seth Skin">
+                <p>Seth</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="seth">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Sixten -->
+            <div class="skin-option" data-skin="sixten">
+                <img src="./skins/sixten1.jpg" alt="Sixten Skin">
+                <p>Sixten</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="sixten">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Timma -->
+            <div class="skin-option" data-skin="timma">
+                <img src="./skins/timma1.jpg" alt="Timma Skin">
+                <p>Timma</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="timma">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Wirre -->
+            <div class="skin-option" data-skin="wirre">
+                <img src="./skins/wirre1.jpg" alt="Wirre Skin">
+                <p>Wirre</p>
+                <p class="skin-cost">Cost: 10 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="wirre">Buy (10 M clicks)</button>
+            </div>
+
+            <!-- Ture -->
+            <div class="skin-option" data-skin="ture">
+                <img src="./skins/ture1.jpg" alt="Ture Skin">
+                <p>Ture</p>
+                <p class="skin-cost">Cost: 100 M clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="ture">Buy (100 M clicks)</button>
+            </div>
+
+            <!-- Anton SC -->
+            <div class="skin-option" data-skin="antonsc">
+                <img src="./skins/antonsc1.jpg" alt="Anton SC Skin">
+                <p>Anton SC</p>
+                <p class="skin-cost">Cost: 1 B clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="antonsc">Buy (1 B clicks)</button>
+            </div>
+
+            <!-- Axel -->
+            <div class="skin-option" data-skin="axel">
+                <img src="./skins/axel1.jpg" alt="Axel Skin">
+                <p>Axel</p>
+                <p class="skin-cost">Cost: 1 B clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="axel">Buy (1 B clicks)</button>
+            </div>
+
+            <!-- EmilStekman -->
+            <div class="skin-option" data-skin="emilstekman">
+                <img src="./skins/emilstekman1.jpg" alt="EmilStekman Skin">
+                <p>EmilStekman</p>
+                <p class="skin-cost">Cost: 1 B clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="emilstekman">Buy (1 B clicks)</button>
+            </div>
+
+            <!-- Ask -->
+            <div class="skin-option" data-skin="ask">
+                <img src="./skins/ask1.jpg" alt="Ask Skin">
+                <p>Ask</p>
+                <p class="skin-cost">Cost: 1 Qa clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="ask">Buy (1 Qa clicks)</button>
+            </div>
+
+            <!-- Albin -->
+            <div class="skin-option" data-skin="albin">
+                <img src="./skins/albin1.jpg" alt="Albin Skin">
+                <p>Albin</p>
+                <p class="skin-cost">Cost: 1 Oc clicks</p>
+                <button class="upgrade-btn skin-select-btn" data-skin="albin">Buy (1 Oc clicks)</button>
+            </div>
+        </div>
+        <button class="upgrade-btn" id="skins-close">Close</button>
+    </div>
+
+    <!-- New Sigma Skins Modal -->
+    <div id="sigma-skins-modal" class="modal">
+        <h2>Select Sigma Skin</h2>
+        <div class="skins-container">
+            <div class="skin-option" data-skin="henry">
+                <img src="./skins/henri1.jpg" alt="Henry Skin">
+                <p>Henry</p>
+                <p class="skin-cost">Cost: 1,000,000,000,000 clicks</p> <!-- Example price, adjust as needed -->
+                <button class="upgrade-btn skin-select-btn" data-skin="henry">Buy (1,000,000,000,000 clicks)</button>
+            </div>
+            <!-- Add more sigma skins here if needed -->
+        </div>
+        <button class="upgrade-btn" id="sigma-skins-close">Close</button>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

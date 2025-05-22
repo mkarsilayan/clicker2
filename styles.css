@@ -1,0 +1,759 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+    background-color: #f0f0f0;
+    overscroll-behavior-y: contain;
+}
+
+h1 {
+    color: white;
+    z-index: 2;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(24px, 5vw, 36px);
+    text-shadow: 
+        -2px -2px 0 #666,
+        2px -2px 0 #666,
+        -2px 2px 0 #666,
+        2px 2px 0 #666;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+h1 span {
+    display: inline-block;
+    font-size: clamp(32px, 6vw, 48px);
+    transform: rotate(30deg);
+    margin-left: 10px;
+}
+
+#clickArea {
+    width: 100vw;
+    height: 100vh;
+    cursor: pointer;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    object-fit: cover;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#counter {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(24px, 5vw, 36px);
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    text-align: center;
+}
+
+.counter-words-text {
+    position: fixed; /* To position it relative to the viewport, like the main counter */
+    top: 90px; /* Adjust this to position it below your #counter (which is at top: 60px) */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(12px, 2.5vw, 16px); /* Smaller than the main counter */
+    color: #e0e0e0; /* A slightly lighter/dimmer white, or choose another color */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Optional shadow, similar to #counter */
+    z-index: 1; /* Same z-index as #counter */
+    text-align: center;
+    width: 80%; /* Allow it to wrap if the text is long */
+}
+
+#upgrades {
+    display: flex;
+    gap: 10px;
+    flex: 2;
+}
+
+.upgrade-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    white-space: normal;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.upgrade-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.button-stat {
+    font-size: 11px;
+    margin-top: 4px;
+    opacity: 0.9;
+    font-weight: normal;
+}
+
+.upgrade-btn:disabled .button-stat {
+    opacity: 0.7;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: clamp(300px, 70vw, 900px); /* Min width, preferred (viewport-based), max width */
+    max-height: 85vh; /* Set a max height for the modal */
+    display: flex; /* Use flexbox to arrange modal content */
+    flex-direction: column; /* Stack content vertically (e.g., title, skins, close button) */
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    cursor: pointer;
+}
+
+.corner-button {
+    position: fixed;
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 3;
+    background-color: #4CAF50;
+}
+
+.corner-button:active {
+    transform: scale(0.95);
+}
+
+#leaderboard-btn {
+    left: 10px;
+    top: 10px;
+}
+
+#reset-btn {
+    right: 10px;
+    top: 10px;
+    background-color: #ff4444;
+}
+
+#skins-btn {
+    left: 10px;
+    top: 60px;
+}
+
+#sigma-skins-btn {
+    background-color: #ff8c00; /* Orange color */
+    border-color: #e07b00; /* Slightly darker orange for border */
+    left: 10px;
+    top: 110px; /* Positioned below the default Skins button */
+}
+.skins-container {
+    display: grid; /* Change to grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Responsive columns */
+    gap: 15px; /* Space between skin options */
+    padding: 10px; /* Padding inside the skins container */
+    margin: 0; /* Reset margin, modal padding will handle outer spacing */
+    overflow-y: auto; /* Enable vertical scrolling for the skins list */
+    flex-grow: 1; /* Allow the skins container to take available vertical space */
+    max-height: 60vh; /* Consistent with media queries, limits skins list height */
+}
+
+.skin-option {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.skin-option.selected {
+    border-color: #4CAF50;
+}
+
+.skin-option img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.skin-option p {
+    margin: 5px 0 10px;
+    font-weight: bold;
+}
+
+.skin-cost {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+.skin-option button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.skin-option button.selected {
+    background-color: #45a049;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    #upgrades {
+        padding: 5px;
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .upgrade-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .corner-button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #skins-btn {
+        top: 60px;
+    }
+
+    #sigma-skins-btn {
+        top: 110px; /* Maintain position below skins button */
+    }
+    
+    .skin-option img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (hover: hover) {
+    .upgrade-btn:hover:not(:disabled) {
+        background-color: #45a049;
+    }
+
+    .corner-button:hover {
+        filter: brightness(1.1);
+    }
+}
+
+#stats-display {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #stats-display {
+        font-size: 14px;
+        bottom: 100px;
+        right: 10px;
+    }
+}
+
+@media (orientation: landscape) and (max-width: 900px) {
+    body {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+
+    h1 {
+        top: 50px;
+        font-size: clamp(20px, 4vw, 28px);
+    }
+
+    h1 span {
+        font-size: clamp(24px, 5vw, 32px);
+    }
+
+    #counter {
+        top: 90px;
+    }
+
+    #clickArea {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 0;
+        object-fit: cover;
+    }
+
+    #upgrades {
+        z-index: 2;
+    }
+
+    .corner-button {
+        z-index: 3;
+    }
+
+    h1, #counter {
+        z-index: 2;
+    }
+
+    #upgrades {
+        position: fixed;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 35vw;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .upgrade-btn {
+        font-size: 14px;
+        padding: 8px;
+        white-space: normal;
+    }
+
+    #stats-display {
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+        background-color: rgba(255, 255, 255, 0.6);
+        padding: 5px 8px;
+    }
+
+    .corner-button {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    #leaderboard-btn {
+        top: 10px;
+        right: 10px;
+    }
+
+    #reset-btn {
+        top: 10px;
+        right: 100px;
+    }
+
+    #skins-btn {
+        top: 10px;
+        right: 190px;
+    }
+
+    #sigma-skins-btn {
+        top: 10px;
+        right: 280px; /* Positioned to the left of the Skins button */
+    }
+
+    /* Skins modal optimization */
+    .modal {
+        max-height: 90vh;
+        max-width: 90vw;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .skins-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        padding: 10px;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .skin-option {
+        padding: 5px;
+    }
+
+    .skin-option img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .skin-option p {
+        margin: 3px 0;
+        font-size: 14px;
+    }
+
+    .skin-cost {
+        font-size: 12px;
+    }
+
+    /* Ensure modals are scrollable */
+    #leaderboard-modal, #skins-modal {
+        max-height: 80vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #leaderboard-table {
+        font-size: 14px;
+    }
+
+    #leaderboard-table th,
+    #leaderboard-table td {
+        padding: 5px;
+    }
+}
+
+/* Add smooth scrolling for all devices */
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent pull-to-refresh on mobile */
+body {
+    overscroll-behavior-y: contain;
+}
+
+/* Update/add these styles for portrait mode */
+@media (orientation: portrait) {
+    body {
+        padding: 10px;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    h1 {
+        top: 50px;
+        font-size: clamp(20px, 6vw, 28px);
+    }
+
+    #counter {
+        top: 90px;
+    }
+
+    #clickArea {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+    }
+
+    #upgrades {
+        background-color: transparent;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .upgrade-btn {
+        font-size: 16px;
+        padding: 12px;
+        width: 100%;
+    }
+
+    #stats-display {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        min-width: 200px;
+        display: flex;
+        justify-content: space-around;
+        background-color: rgba(255, 255, 255, 0.6);
+        font-size: 12px;
+        text-align: center;
+        padding: 5px 15px;
+    }
+
+    #stats-display div {
+        margin: 0 10px;
+    }
+
+    .corner-button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    #leaderboard-btn {
+        top: 10px;
+        left: 10px;
+    }
+
+    #reset-btn {
+        top: 10px;
+        right: 10px;
+    }
+
+    #skins-btn {
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #sigma-skins-btn {
+        top: 60px; /* Positioned below the centered Skins button */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Modal optimizations for portrait */
+    .modal {
+        width: 90vw;
+        max-height: 80vh;
+        padding: 15px;
+    }
+
+    .skins-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 10px;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .skin-option {
+        padding: 10px;
+    }
+
+    .skin-option img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        max-width: 120px;
+    }
+
+    .skin-option p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .skin-cost {
+        font-size: 12px;
+    }
+
+    #leaderboard-table {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    #leaderboard-table th,
+    #leaderboard-table td {
+        padding: 8px 4px;
+    }
+
+    /* Player name modal optimization */
+    #player-name-modal input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .bottom-controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    #upgrades {
+        flex: none;
+        width: 100%;
+        display: flex;
+        gap: 8px;
+    }
+
+    #stats-display {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .bottom-controls {
+        padding: 8px;
+    }
+
+    #upgrades {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .upgrade-btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .button-stat {
+        font-size: 10px;
+        margin-top: 3px;
+    }
+}
+
+/* Add touch optimization for both orientations */
+@media (hover: none) {
+    .upgrade-btn:active:not(:disabled),
+    .corner-button:active {
+        transform: scale(0.95);
+        transition: transform 0.1s;
+    }
+
+    .modal {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Update bottom controls container */
+.bottom-controls {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 2;
+    width: 90%;
+    max-width: 600px;
+}
+
+/* Update landscape mode specific styles */
+@media (orientation: landscape) {
+    .bottom-controls {
+        flex-direction: row;
+        align-items: center;
+        max-width: 80vw;
+    }
+
+    #upgrades {
+        flex: 2;
+    }
+
+    #stats-display {
+        flex: 1;
+    }
+}
+
+/* Update leaderboard modal styles */
+#leaderboard-modal {
+    max-height: 80vh;
+    width: 90%;
+    max-width: 500px;
+    display: none;  /* Make sure it's hidden by default */
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+}
+
+/* When visible, use this class */
+#leaderboard-modal.visible {
+    display: flex;
+}
+
+#leaderboard-modal h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.leaderboard-content {
+    height: 60vh;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+#leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#leaderboard-table thead {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#leaderboard-table th,
+#leaderboard-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#leaderboard-close {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* Mobile optimization for leaderboard */
+@media (max-width: 768px) {
+    #leaderboard-modal {
+        max-height: 80vh;
+        padding: 10px;
+    }
+
+    .leaderboard-content {
+        height: 50vh;
+    }
+
+    #leaderboard-table th,
+    #leaderboard-table td {
+        padding: 6px;
+        font-size: 14px;
+    }
+}
