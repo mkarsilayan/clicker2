@@ -67,7 +67,7 @@ h1 span {
 
 .counter-words-text {
     position: fixed; /* To position it relative to the viewport, like the main counter */
-    top: 90px; /* Adjust this to position it below your #counter (which is at top: 60px) */
+    top: calc(60px + clamp(24px, 5vw, 36px) + 5px); /* Adjust this to position it below your #counter (which is at top: 60px) */
     left: 50%;
     transform: translateX(-50%);
     font-size: clamp(12px, 2.5vw, 16px); /* Smaller than the main counter */
